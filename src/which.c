@@ -356,9 +356,9 @@ int main(int argc, char *argv[])
 "           %s -las foo*.bar  (override the default extension)\n"
 , VERSION,
 #if defined(__32BIT__) && !defined(EMX)
-	    "", prognam, "", "", "", "",
+	    "", prognam, "", "", "",
 #else
-	    " & DOS", prognam, " (OS/2)", " (OS/2)",  " (OS/2)", " (OS/2)",
+	    " & DOS", prognam, " (OS/2)", " (OS/2)",  " (OS/2)",
 #endif /* ?__32BIT__ */
 	    prognam, prognam);
 #endif /* ?TRADITIONAL */
