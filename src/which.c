@@ -38,10 +38,16 @@
 	    -u	 Unix style path names (use forward slashes as dir separators)
 	- Minor refinements
 
+    v2.1.4  26 June 2002
+	 New option -i, searches C_INCLUDE_PATH for .h files
+	 Option -l now returns .lib and .a, as well as .dll files in your LIBPATH
+	 Option -b now returns .pdf as well as .inf files on your BOOKSHELF
+	 Option -u now reverts to OS/2 '\' style path separator. Unix style is default now.
+
 
   ---------------------------------------------------------------------------*/
 
-#define VERSION   "v2.1.3 June-03-1997 updated by Wonkoo Kim"
+#define VERSION   "v2.1.4, 2002.06.26"
 
 /* #define DEBUG */
 
@@ -95,6 +101,7 @@
 int get_libpath(char **path);
 int get_helppath(char **path);
 int get_bookpath(char **path);
+int get_inclpath(char **path); /* 'include' path */
 int printmsg (char *msg, int pos);
 void pretty_path (char *path, char dir_sep);
 
@@ -133,7 +140,9 @@ static char *ext_4os2[] = {	   /* 4OS2 extensions */
 };
 
 static char *ext_libpath[] = {	   /* LIBPATH extension(s) */
-    ".dll"
+    ".dll",
+    ".lib",
+    ".a"
 };
 
 static char *ext_dpath[] = {	   /* DPATH extension(s) */
@@ -152,6 +161,10 @@ static char *ext_helppath[] = {     /* HELP extension(s) */
 
 static char *ext_bookpath[] = {     /* BOOKSHELF extension(s) */
     ".inf"
+};
+
+static char *ext_inclpath[] = {      /* INCLPATH extension */
+    ".h"
 };
 
 static char *ext_envpath[] = {	   /* ENV extension(s) */
@@ -224,6 +237,7 @@ SHELLINFO shells[] = {
 #define HELPPATH   3
 #define BOOKPATH   4
 #define ENVPATH    5
+#define INCLPATH   6   /* 'include' path */
 
 char *prognam;
 
@@ -244,7 +258,7 @@ int main(int argc, char *argv[])
     int found = 0;
     char info[20];
     char *envpath = "", envvar[100];
-    char dir_separator = '\\';          /* OS/2 or DOS style dir separator */
+    char dir_separator = '/';          /* defaults to Unix style dir separator */
 
 /*---------------------------------------------------------------------------
     Parse the command line...
@@ -280,6 +294,9 @@ int main(int argc, char *argv[])
 		    case 'b':             /* search for book files */
 			pathtype = BOOKPATH;
 			break;
+		    case 'i':             /* seach for 'include' files */
+			pathtype = INCLPATH;
+			break;
 		    case 'e':             /* search files in paths set by env */
 			pathtype = ENVPATH;
 			if (*++(argv[0])) {
@@ -299,11 +316,11 @@ int main(int argc, char *argv[])
 		    case 's':             /* show file information */
 			showinfo = TRUE;
 			break;
-		    case 'q':             /* quite mode (return errlevel) */
+		    case 'q':             /* quiet mode (return errlevel) */
 			quiet = TRUE;
 			break;
 		    case 'u':           /* unix style path (forward slashes) */
-			dir_separator = '/';
+			dir_separator = '\\';
 			break;
 		    default:
 			++error;
@@ -325,14 +342,15 @@ int main(int argc, char *argv[])
 "    (default behavior is to find location of program executed as \"cmd\")\n"
 "    -1  show the first match from all cmd args; display nothing if not found\n"
 "    -a  list all matches (With -1, list all first matches of cmd args)\n"
-"    -b  search directories in BOOKSHELF for book (.inf) files%s\n"
+"    -b  search directories in BOOKSHELF for book (.inf and .pdf) files\n"
 "    -d  search directories in DPATH for data files%s\n"
-"    -e  search directories in a given env var; Exapmple: -e EPMPATH\n"
+"    -e  search directories in a given env var; Example: -e EPMPATH\n"
 "    -h  search directories in HELP for help (.hlp) files%s\n"
-"    -l  search directories in LIBPATH (BEGIN/ENDLIBPATH) for DLLs%s\n"
+"    -l  search directories in LIBPATH (BEGIN/ENDLIBPATH) for DLLs, LIBs, As\n"
+"    -i  search directories in C_INCLUDE_PATH for header (.h) files%s\n"
 "    -q  quiet mode (only returns error code without onscreen messages)\n"
 "    -s  show file date/time and size\n"
-"    -u  unix style path names (use forward-slashes as dir separators)\n\n"
+"    -u  revert to OS/2 style '\\' dir separator (default is now Unix style '/')\n\n"
 "   cmd  name to be searched (wildcards can be used)\n\n"
 "Examples:  %s -las emx*\n"
 "           %s -las foo*.bar  (override the default extension)\n"
@@ -425,6 +443,13 @@ int main(int argc, char *argv[])
 	    shells[sh].extension = ext_envpath;
 	    shells[sh].num_ext = sizeof(ext_envpath)/sizeof(char *);
 	    path = envpath;
+	    break;
+	case INCLPATH:
+	    pathvar = "C_INCLUDE_PATH";
+	    regpath = FALSE;
+	    shells[sh].extension = ext_inclpath;
+	    shells[sh].num_ext = sizeof(ext_inclpath)/sizeof(char *);
+	    path = getenv(pathvar);
 	    break;
     }
     Trace((stderr, "COMSPEC now = %s\n", comspec));
@@ -580,6 +605,7 @@ int main(int argc, char *argv[])
 		/* quit as soon as found:  only one internal match allowed */
 		for (i = 0;  i < shells[sh].num_int;  ++i) {
 		    Trace((stderr, " checking %s\n", shells[sh].internal[i]));
+/*
 #ifdef __EMX__
 		    if (wildcard) {
 			if (fnmatch(argv[j], shells[sh].internal[i],
@@ -602,10 +628,11 @@ int main(int argc, char *argv[])
 				}
 			    }
 			    if (!all || firstmatch)
-				break;	 /* quit right now unless finding all */
-			}
+				break;	*/ /* quit right now unless finding all */
+/*			}
 		    } else {
 #endif
+ */
 			if (stricmp(argv[j], shells[sh].internal[i]) == 0) {
 			    ++found;
 			    if (quiet) break;
@@ -620,9 +647,11 @@ int main(int argc, char *argv[])
 			    }
 			    break;
 			}
+/*
 #ifdef __EMX__
 		    }
 #endif
+ */
 		}
 	    }
 	}
@@ -646,7 +675,7 @@ int main(int argc, char *argv[])
 			    found++;
 			    if (quiet) break;
 			    if (showinfo) {
-				strftime (info, 20, "%T %D",
+				strftime (info, 20, "%D %T",
 				    localtime(&statbuf.st_mtime));
 				printf ("%4d: %s %9ld  %s\n", found, info,
 				    statbuf.st_size, list[l]);
@@ -668,7 +697,7 @@ int main(int argc, char *argv[])
 		    ++found;
 		    if (quiet) break;
 		    if (showinfo) {
-			strftime (info, 20, "%T %D",
+			strftime (info, 20, "%D %T",
 			    localtime(&statbuf.st_mtime));
 			printf ("%4d: %s %9ld  %s\n", found, info,
 			    statbuf.st_size, tempname);
@@ -695,7 +724,7 @@ int main(int argc, char *argv[])
 			    found++;
 			    if (quiet) break;
 			    if (showinfo) {
-				strftime (info, 20, "%T %D",
+				strftime (info, 20, "%D %T",
 				    localtime(&statbuf.st_mtime));
 				printf ("%4d: %s %9ld  %s\n", found, info,
 				    statbuf.st_size, list[l]);
@@ -717,7 +746,7 @@ int main(int argc, char *argv[])
 		    ++found;
 		    if (quiet) break;
 		    if (showinfo) {
-			strftime (info, 20, "%T %D",
+			strftime (info, 20, "%D %T",
 			    localtime(&statbuf.st_mtime));
 			printf ("%4d: %s %9ld  %s\n", found, info,
 			    statbuf.st_size, tempname);
@@ -899,6 +928,8 @@ int get_libpath(char **path)
     return (0);
 }
 
+
+
 /*--------------------------------------------------------------------------*/
 int printmsg (char *msg, int pos)
 /*--------------------------------------------------------------------------*/
@@ -940,7 +971,7 @@ void	pretty_path (char *path, char dir_sep)
 
     switch (dir_sep) {
     case '\\':
-	bad_sep = '/';
+	bad_sep = '\\';
 	break;
     case '/':
 	bad_sep = '\\';
