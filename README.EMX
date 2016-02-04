@@ -1,17 +1,17 @@
 
-'which' v2.1.3 for OS/2 and DOS
+'which' v2.1.5 for OS/2 and DOS
 -------------------------------
 
-Enhanced features in v2.1.3 (after v2.1) are:
+Enhanced features in v2.1.5 (after v2.1) are:
 
     - Wildcard support (when compiled with emx/gcc)
     - Display date/time and size info of searched files
     - Search directories from an env variable
-    - Search LIBPATH (+ BEGINLIBPATH, ENDLIBPATH), DPATH, BOOKSHELF, HELP
-      directories for OS/2
+    - Search LIBPATH (+ BEGINLIBPATH, ENDLIBPATH), DPATH, BOOKSHELF, HELP,
+      C_INCLUDE_PATH directories for OS/2
     - Get the first match from all command line args (for use with makefile)
       (e.g. in GNU makefile:  CC := $(shell which -1 gcc icc) )
-    - Unix or OS/2(DOS) style path conversions
+    - Unix or OS/2(DOS) style path conversions. Unix style is default.
 
 This is a modified version from v2.1 of Greg Roelofs, and supports wildcards
 in command names.  The wildcard support is available only when the v2.1.3
@@ -21,18 +21,18 @@ is not added in this version.
 
 Included files are:
 -------------------
-    src\*	    -- Modified sources (v2.1.3)
+    src\*	    -- Modified sources (v2.1.5)
     src-org\*	    -- Original v2.1 sources
     which2.exe	    -- OS/2 executable using dll (require emxrt.zip)
     which2s.exe     -- OS/2 stand-alone executable
     whichemx.exe    -- DOS and OS/2 bound executable (require emxrt.zip)
 
-Included *.exe are compiled with emx/gcc 0.9c fix02.  whichemx.exe can run on
+Included *.exe are compiled with emx/gcc 0.9d fix04.  whichemx.exe can run on
 either DOS or OS/2, and all these has been tested on OS/2 Warp's DOS command
 window or OS/2 command window.	I hope they can run under other shells as
 well.
 
-To rebuild v2.1.3 using GNU make and emx/gcc 0.9c, run one of the following
+To rebuild v2.1.5 using GNU make and emx/gcc 0.9d, run one of the following
 in src\ dir:
 
     make gccdyn     -- to create executable that uses dll
@@ -53,6 +53,15 @@ For more information, refer to the original documentations in src-org\.
 
 Changes:
 --------
+    v2.1.5  February 4, 2016 <komh@chollian.net>
+	 Search the given name first unconditionally.
+
+    v2.1.4  June 26, 2002
+	 New option -i, searches C_INCLUDE_PATH for .h files
+	 Option -l now returns .lib and .a, as well as .dll files in your LIBPATH
+	 Option -b now returns .pdf as well as .inf files on your BOOKSHELF
+	 Option -u now reverts to OS/2 '\' style path separator. Unix style is default now.
+
     v2.1.3  June 3, 1997
 	- Option -l now searches BEGINLIBPATH + LIBPATH + ENDLIBPATH.
 	    (Thanks to "Bruce A. Mallett" <bam@NightStorm.com>)
@@ -65,3 +74,4 @@ Changes:
 
 --
 Wonkoo Kim (wkim+@pitt.edu), June 3, 1997
+KO Myung-Hun (komh@chollian.net), February 4, 2016
