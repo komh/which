@@ -44,10 +44,12 @@
 	 Option -b now returns .pdf as well as .inf files on your BOOKSHELF
 	 Option -u now reverts to OS/2 '\' style path separator. Unix style is default now.
 
+    v2.1.5  February 4, 2016 <komh@chollian.net>
+	 Search the given name first unconditionally.
 
   ---------------------------------------------------------------------------*/
 
-#define VERSION   "v2.1.4, 2002.06.26"
+#define VERSION   "v2.1.5, 2016.02.04"
 
 /* #define DEBUG */
 
