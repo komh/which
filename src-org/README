@@ -1,0 +1,32 @@
+   MS-DOS and OS/2 `which' v2.1
+
+   This is a clone of the Unix (csh) "which" command, used to locate
+   executable commands in the user's PATH.  It has a few enhancements
+   not in the Unix version:  it can print the locations of all copies 
+   of the command(s), not just the one which will be executed; and it 
+   can find DLLs in the LIBPATH and data files in the DPATH (these are
+   probably OS/2-specific concepts anyway).
+
+   The big improvement over the last major release (2.02) is the ability
+   to detect 4DOS and 4OS2 aliases, in addition to more accurate detec-
+   tion of 4* internal commands.  Thanks to Michael D. Lawler for the 
+   spawnl() code on which this is based, for patches relating to Borland
+   warning messages, and for some excellent beta testing.
+
+   In addition, a 32-bit OS/2 executable (which32.exe) is now included in
+   OS/2 distributions; it makes use of a 32-bit system call to determine
+   the boot drive and therefore the location of the config.sys file (for
+   determining the LIBPATH).  There is no 16-bit equivalent, so users of
+   OS/2 1.x will have to make do with the original hit-or-miss method (i.e.,
+   check the current drive, then drive c:).  Thanks to Kenneth Porter for
+   sending the relevant code fragment.
+
+   The which.exe executable which is included here is a bound executable
+   compiled with MSC 6.0, able to run under any version of OS/2 or under
+   MS-DOS.  It has been tested under OS/2 2.0 GA+SP (in windowed, full-
+   screen and DOS sessions, and both CMD.EXE and 4OS2.EXE) and under
+   4DOS.COM; previous versions were tested under OS/2 1.3 (CMD.EXE and
+   DOS sessions) and MS-DOS 3.31 COMMAND.COM.
+
+   Greg Roelofs, newt@uchicago.edu
+   28 July 1993

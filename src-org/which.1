@@ -1,0 +1,129 @@
+.TH WHICH 1 "28 Jul 93 (v2.1)"
+.SH NAME
+which \- locate commands and data files, and print paths
+.SH SYNOPSIS
+.I which
+[
+.B \-a
+] [
+.B \-l
+|
+.B \-d
+]
+.B command
+[
+.B command\fP ... ]
+.PD
+.SH ARGUMENTS
+.IP \fBcommand\fP \w'\fBcommand\fP'u+2m
+Command or list of commands (or files) to locate.
+.PD
+.SH OPTIONS
+.PD 0
+.IP \fB\-a\fP \w'\-1'u+2m
+list all matches, not just first one
+.IP \fB\-l\fP
+search LIBPATH for DLLs
+.IP \fB\-d\fP
+search DPATH for data files
+.PD
+.SH DESCRIPTION
+By default
+.I which
+checks, in order, command-shell aliases (4DOS and 4OS2 only), internal
+command-shell commands, the current directory, and directories specified 
+in the user's PATH
+variable for the commands given as its arguments.  If a given command
+is found, its full path is printed; otherwise a ``not found'' message
+is printed with a list of the directories which were checked.  In the
+case the command is an internal shell command, a message to this
+effect is printed in lieu of a path.
+.PP
+.I which
+respects the shell precedence of command extensions; thus more.com
+is listed instead of more.exe, should both exist in the same directory.
+Likewise, .exe files have precedence over .cmd files, and .cmd files
+over .bat files.  A command with a dot in its name has precedence over
+any default extension; for example, list.old is found before list.old.exe.
+.PP
+The
+.B \-a
+option causes
+.I which
+to list all matching commands in the path, not just the one which would
+be executed.  The
+.B \-d
+and
+.B \-l
+options alter the nature of the search; when
+.B \-d
+is specified,
+.I which
+searches directories in the DPATH for data files, and when
+.B \-l
+is specified, it searches through the LIBPATH for dynamic link libraries
+(.DLLs).  The
+.B \-d
+and
+.B \-l
+options are mutually exclusive, and in both cases the current directory
+is searched only if ``.'' is listed in the appropriate path.
+.PD
+.SH EXAMPLES
+To find the locations of five commands:
+.IP "\t\fIwhich\fP dir pushd format unzip zipinfo"
+.PP
+The output might look something like the following:
+.IP "\tdir:  4OS2.EXE internal command"
+.IP "\tpushd:  aliased to ""c:\eutils\e16\epushd.cmd"""
+.IP "\tc:\eos2\eformat.com"
+.IP "\tc:\eutils\e32\eunzip.exe"
+.IP "\tno zipinfo in c:\eos2 . c:\eutils\e32 c:\eutils\e16"
+.IP "\t\ \ c:\eutils\ebnd c:\eos2\esystem c:\eemx\ebin"
+.IP "\t\ \ c:\egroff\ebin c:\eos2\emdos\ewinos2 c:\eos2\einstall"
+.IP "\t\ \ c:\e c:\eos2\emdos c:\eos2\eapps c:\eibmtk\eos2bin"
+.IP "\t\ \ c:\eibmwf\ebin c:\eibmc\ebin"
+.PP
+To locate all copies of the emx.dll dynamic link library (the first
+one listed is the one which will be used by the operating system):
+.IP "\t\fIwhich\fP \-al emx"
+.PP
+To find two of the IBM Redbooks (.inf format):
+.IP "\t\fIwhich\fP \-d gg243732 gg243774"
+.PD
+.SH SEE ALSO
+csh(1)
+.PD
+.SH BUGS
+For CMD.EXE and COMMAND.COM, the list of internal shell commands is 
+static and does not reflect differences between various versions of 
+the command shell.  The current command lists correspond roughly to
+OS/2 2.0 and MS-DOS 5.0.
+.PP
+MS-DOS 5.0 and 6.0 DOSKEY aliases (``macros'') are not yet detected,
+because there's no good way to do so without writing a temporary file.
+.PP
+There is no reasonable way to determine the LIBPATH in a foolproof
+manner; it does not have a corresponding environment variable or 
+system call.
+.I which
+looks in the config.sys system file for LIBPATH, but this can fail if
+the LIBPATH line has been edited since the system was last booted.  In
+addition, under OS/2 1.x there is no way to determine the boot drive, so
+.I which
+may fail even to find the proper config.sys.  The 16-bit (or bound)
+executable first checks for \econfig.sys on the current drive and then
+on drive c:, but this will fail if, for example, the system was booted from
+floppy drive a: and the current drive is c:.  The 32-bit executable
+can determine the boot drive but is still susceptible to editing changes
+and the possible removal of the boot floppy.
+.PP
+The list of ``proper'' extensions for use with DPATH is somewhat hazy;
+the following are presently
+used:  \fB.boo\fP, \fB.dat\fP, \fB.hlp\fP, \fB.inf\fP, \fB.ini\fP, \fB.msg\fP
+and \fB.ndx\fP.
+.PD
+.SH AUTHOR
+Greg Roelofs (also known as Cave Newt).  The makefile was liberally borrowed
+from Kai Uwe Rommel's \fIUnZip\fP makefile.os2.  Michael Lawler and Kenneth
+Porter contributed code as noted in the source file.

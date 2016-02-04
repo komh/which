@@ -1,0 +1,18 @@
+Contents of the which 2.1 archive:
+
+  Contents      this file
+  README        brief "what it be" file
+  Makefile      makefile for almost all OS/2 and some MS-DOS compilers
+  which.1       manual page, nroff format
+  which.doc     manual page, human-readable format
+  which.c       C source code
+  which.def     OS/2 linker definition file
+  which.exe     bound (16-bit OS/2 & MS-DOS) executable, compiled with MSC 6.0
+  which32.exe   32-bit OS/2 2.x executable, compiled with emx+gcc 0.8f
+
+The makefile has targets for most OS/2 compilers (not Zortech), thanks
+to Kai Uwe Rommel's Info-ZIP efforts, but only the "msc", "mscos2", "gcc"
+and "ibm" targets have been tested at all.  I'm not even sure all the switches 
+are right for those... :-)  The "msc" target is the default, since it
+results in a "universal" executable; however, the 32-bit targets (ibm,
+gcc, watcom, etc.) result in a slightly more capable program.

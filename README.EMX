@@ -1,0 +1,67 @@
+
+'which' v2.1.3 for OS/2 and DOS
+-------------------------------
+
+Enhanced features in v2.1.3 (after v2.1) are:
+
+    - Wildcard support (when compiled with emx/gcc)
+    - Display date/time and size info of searched files
+    - Search directories from an env variable
+    - Search LIBPATH (+ BEGINLIBPATH, ENDLIBPATH), DPATH, BOOKSHELF, HELP
+      directories for OS/2
+    - Get the first match from all command line args (for use with makefile)
+      (e.g. in GNU makefile:  CC := $(shell which -1 gcc icc) )
+    - Unix or OS/2(DOS) style path conversions
+
+This is a modified version from v2.1 of Greg Roelofs, and supports wildcards
+in command names.  The wildcard support is available only when the v2.1.3
+source code is compiled with emx/gcc.  Wildcard support for other compilers
+is not added in this version.
+
+
+Included files are:
+-------------------
+    src\*	    -- Modified sources (v2.1.3)
+    src-org\*	    -- Original v2.1 sources
+    which2.exe	    -- OS/2 executable using dll (require emxrt.zip)
+    which2s.exe     -- OS/2 stand-alone executable
+    whichemx.exe    -- DOS and OS/2 bound executable (require emxrt.zip)
+
+Included *.exe are compiled with emx/gcc 0.9c fix02.  whichemx.exe can run on
+either DOS or OS/2, and all these has been tested on OS/2 Warp's DOS command
+window or OS/2 command window.	I hope they can run under other shells as
+well.
+
+To rebuild v2.1.3 using GNU make and emx/gcc 0.9c, run one of the following
+in src\ dir:
+
+    make gccdyn     -- to create executable that uses dll
+    make gcc	    -- stand-alone executable
+    make emx	    -- OS/2 + DOS bound executable
+
+
+Installation:
+-------------
+
+Copy an executable to 'which.exe' and place it in a PATH.
+
+
+Using which:
+------------
+
+For more information, refer to the original documentations in src-org\.
+
+Changes:
+--------
+    v2.1.3  June 3, 1997
+	- Option -l now searches BEGINLIBPATH + LIBPATH + ENDLIBPATH.
+	    (Thanks to "Bruce A. Mallett" <bam@NightStorm.com>)
+	- New options:
+	    -1	 Show only the first match from all command line args, i.e.
+		 displays a single path name if found (useful in makefile)
+		 (-1 + -a for all first matches of command line args)
+	    -u	 Unix style path names (use forward slashes as dir separators)
+	- Minor refinements
+
+--
+Wonkoo Kim (wkim+@pitt.edu), June 3, 1997

@@ -1,0 +1,113 @@
+
+WHICH(1)                 USER COMMANDS                   WHICH(1)
+
+NAME
+     which - locate commands and data files, and print paths
+
+SYNOPSIS
+     which [ -a ] [ -l | -d ] command [ command ... ]
+
+ARGUMENTS
+     command  Command or list of commands (or files) to locate.
+
+OPTIONS
+     -a  list all matches, not just first one
+     -l  search LIBPATH for DLLs
+     -d  search DPATH for data files
+
+DESCRIPTION
+     By default which checks,  in  order,  command-shell  aliases
+     (4DOS  and  4OS2 only), internal command-shell commands, the
+     current directory, and directories specified in  the  user's
+     PATH variable for the commands given as its arguments.  If a
+     given command is found, its full path is printed;  otherwise
+     a ``not found'' message is printed with a list of the direc-
+     tories which were checked.  In the case the  command  is  an
+     internal  shell command, a message to this effect is printed
+     in lieu of a path.
+
+     which respects the shell precedence of  command  extensions;
+     thus  more.com  is  listed  instead of more.exe, should both
+     exist in the same directory.  Likewise, .exe files have pre-
+     cedence  over .cmd files, and .cmd files over .bat files.  A
+     command with a dot in  its  name  has  precedence  over  any
+     default  extension;  for  example,  list.old is found before
+     list.old.exe.
+
+     The -a option causes which to list all matching commands  in
+     the  path, not just the one which would be executed.  The -d
+     and -l options alter the nature of the search;  when  -d  is
+     specified,  which searches directories in the DPATH for data
+     files, and when -l is specified,  it  searches  through  the
+     LIBPATH  for  dynamic link libraries (.DLLs).  The -d and -l
+     options are  mutually  exclusive,  and  in  both  cases  the
+     current directory is searched only if ``.'' is listed in the
+     appropriate path.
+
+EXAMPLES
+     To find the locations of five commands:
+
+          which dir pushd format unzip zipinfo
+
+     The output might look something like the following:
+
+          dir:  4OS2.EXE internal command
+          pushd:  aliased to "c:\utils\16\pushd.cmd"
+          c:\os2\format.com
+          c:\utils\32\unzip.exe
+          no zipinfo in c:\os2 . c:\utils\32 c:\utils\16
+            c:\utils\bnd c:\os2\system c:\emx\bin
+            c:\groff\bin c:\os2\mdos\winos2 c:\os2\install
+            c:\ c:\os2\mdos c:\os2\apps c:\ibmtk\os2bin
+            c:\ibmwf\bin c:\ibmc\bin
+
+     To locate all copies of the  emx.dll  dynamic  link  library
+     (the  first  one listed is the one which will be used by the
+     operating system):
+
+          which -al emx
+
+     To find two of the IBM Redbooks (.inf format):
+
+          which -d gg243732 gg243774
+
+SEE ALSO
+     csh(1)
+
+BUGS
+     For CMD.EXE and COMMAND.COM, the list of internal shell com-
+     mands  is  static  and  does not reflect differences between
+     various versions of the command shell.  The current  command
+     lists correspond roughly to OS/2 2.0 and MS-DOS 5.0.
+
+     MS-DOS 5.0 and 6.0 DOSKEY aliases (``macros'') are  not  yet
+     detected, because there's no good way to do so without writ-
+     ing a temporary file.
+
+     There is no reasonable way to determine  the  LIBPATH  in  a
+     foolproof  manner; it does not have a corresponding environ-
+     ment variable or system call.  which looks in the config.sys
+     system  file  for  LIBPATH, but this can fail if the LIBPATH
+     line has been edited since the system was last  booted.   In
+     addition,  under  OS/2  1.x there is no way to determine the
+     boot drive, so which  may  fail  even  to  find  the  proper
+     config.sys.   The  16-bit (or bound) executable first checks
+     for \config.sys on the current drive and then on  drive  c:,
+     but  this  will  fail if, for example, the system was booted
+     from floppy drive a: and the current drive is c:.   The  32-
+     bit  executable  can  determine  the boot drive but is still
+     susceptible to editing changes and the possible  removal  of
+     the boot floppy.
+
+     The list of ``proper'' extensions  for  use  with  DPATH  is
+     somewhat  hazy;  the  following  are  presently used:  .boo,
+     .dat, .hlp, .inf, .ini, .msg and .ndx.
+
+AUTHOR
+     Greg Roelofs (also known as Cave Newt).   The  makefile  was
+     liberally borrowed from Kai Uwe Rommel's UnZip makefile.os2.
+     Michael Lawler and Kenneth Porter contributed code as  noted
+     in the source file.
+
+Newtware                                         28 Jul 93 (v2.1)
+

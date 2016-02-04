@@ -1,0 +1,4 @@
+NAME WINDOWCOMPAT NEWFILES
+DESCRIPTION 'clone of Unix "which" command'
+
+STACKSIZE 0x8000
