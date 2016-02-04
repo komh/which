@@ -665,7 +665,7 @@ int main(int argc, char *argv[])
 	    q = argv[j];
 	    while ((*p++ = *q++) != '\0');  /* copy program name */
 	    --p;			    /* point at null */
-	    if (hasdot) {
+	    if (1 || hasdot) {
 		Trace((stderr, " checking %s\n", tempname));
 #ifdef __EMX__
 		list = _fnexplode (tempname);
