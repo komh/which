@@ -785,7 +785,7 @@ int main(int argc, char *argv[])
 	    if (firstmatch && found && !all) break;
 	}
     }
-    exit (0);
+    exit (!found);
 }
 
 
